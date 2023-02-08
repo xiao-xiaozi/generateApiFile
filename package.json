@@ -1,0 +1,23 @@
+{
+  "name": "generate-api-file",
+  "version": "1.0.0",
+  "description": "![example](/images/20220329170513.png)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiao-xiaozi/generateApiFile.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xiao-xiaozi/generateApiFile/issues"
+  },
+  "homepage": "https://github.com/xiao-xiaozi/generateApiFile#readme",
+  "devDependencies": {
+    "lodash": "^4.17.21"
+  }
+}
