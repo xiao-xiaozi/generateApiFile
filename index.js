@@ -4,7 +4,7 @@ const _ = require('lodash')
 
 let setting = {
   dir: "test-ApiFile",
-  swaggerUrl: "http://172.16.8.102:8530/econtract/v2/api-docs",
+  swaggerUrl: "http://172.16.6.42:8532/ticket/v2/api-docs",
   // swaggerUrl:'http://172.16.6.254:9010/userManage/v2/api-docs',
   // 如果swagger配置了访问账号则需要配置 auth
   options: {
@@ -52,73 +52,6 @@ http
     console.error(`Got error: ${e.message}`);
   });
 
-// api参数字符串
-// function paramsFn(parameters, definitions) {
-//   let paramsStr = "";
-//   parameters.forEach((param) => {
-//     if (param.in === "header" || param.in === "path") return;
-//     if (Reflect.has(param, "schema")) {
-//       if (Reflect.has(param.schema, "originalRef")) {
-//         if (Reflect.has(definitions, param.schema.originalRef)) {
-//           let schema = definitions[param.schema.originalRef];
-//           let { type, required, properties } = schema;
-//           if (type && type === "object") {
-//             if (properties) {
-//               for (prop in properties) {
-//                 if (
-//                   required &&
-//                   Array.isArray(required) &&
-//                   required.includes(prop)
-//                 ) {
-//                   paramsStr += backTemplate(
-//                     prop,
-//                     true,
-//                     properties[prop].type,
-//                     properties[prop].description
-//                   );
-//                 } else {
-//                   paramsStr += backTemplate(
-//                     prop,
-//                     false,
-//                     properties[prop].type,
-//                     properties[prop].description
-//                   );
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     } else {
-//       if (param.required) {
-//         paramsStr += backTemplate(
-//           param.name,
-//           true,
-//           param.type,
-//           param.description
-//         );
-//       } else {
-//         paramsStr += paramsStr += backTemplate(
-//           param.name,
-//           true,
-//           param.type,
-//           param.description
-//         );
-//       }
-//     }
-//   });
-
-//   function backTemplate(name, required, type, description) {
-//     return `
-// * @name:${name}
-// * @required:${required}
-// * @type:${type}
-// * @description:${description}
-// `;
-//   }
-//   return paramsStr;
-// }
-
 function generateApiFile(apiDoc) {
   let { paths, definitions, tags } = apiDoc;
   if (!paths) throw new Error("paths field is undefined!");
@@ -129,10 +62,17 @@ function generateApiFile(apiDoc) {
   let tagObj = {};
   tags.forEach((tag) => {
     tagObj[tag.name] = {
-      name: tag.name,
+      // name: tag.name,
+      name: apiFileName(tag.description),
       apiStr: "",
     };
   });
+
+  // 用controller 名作为api文件名
+  function apiFileName(name){
+    let nameSplit = name.split(' ')
+    return nameSplit.slice(0, nameSplit.length - 1).join('')
+  }
 
   // paths 处理
   for (let url in paths) {
@@ -145,7 +85,7 @@ function generateApiFile(apiDoc) {
 
       // todo：函数名取接口split('/')后的哪一段
       let urlSplit = url.split("/");
-      tagObj[apiInfo.tags[0]].name = urlSplit[1]; // api js 文件名
+      // tagObj[apiInfo.tags[0]].name = urlSplit[1]; // api js 文件名
       let parametersIn = apiInfo.parameters.map((item) => item.in); // 接口参数位置
       let fnName; // 从接口路径获取api函数名
       let apiUrl;
